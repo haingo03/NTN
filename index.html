@@ -12,14 +12,14 @@
             height: 100vh;
             background: linear-gradient(182deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             font-family: 'Arial', sans-serif;
-            overflow: hidden; /* Ẩn thanh cuộn */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        /* 2. Phần chữ chạy (Marquee) */
+        /* 2. Phần chữ chạy */
         .marquee-container {
             position: absolute;
             top: 20px;
@@ -41,12 +41,8 @@
             to { transform: translateX(-100%); }
         }
 
-        /* 3. Nút bấm và Hộp quà */
-        .content-box {
-            text-align: center;
-            z-index: 10;
-        }
-        
+        /* 3. Nút bấm */
+        .content-box { text-align: center; z-index: 10; }
         .main-btn {
             background-color: #ff4757;
             color: white;
@@ -56,36 +52,48 @@
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
-            transition: transform 0.3s, background-color 0.3s;
             animation: pulse 2s infinite;
         }
-        .main-btn:hover {
-            transform: scale(1.1);
-            background-color: #ff6b81;
-        }
-        
+        .main-btn:hover { transform: scale(1.1); background-color: #ff6b81; }
         @keyframes pulse {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
             70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
         }
 
-        /* 4. Hộp thư bí mật (Hiện ra khi bấm nút) */
+        /* 4. Hộp quà & Ảnh */
         #secret-gift {
-            display: none; /* Ẩn đi ban đầu */
-            background: white;
-            padding: 30px;
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 80%;
-            width: 400px;
+            max-width: 90%;
+            width: 500px;
             position: absolute;
             animation: popup 0.5s ease-out;
+            text-align: center;
+            z-index: 100;
         }
-        #secret-gift h2 { color: #ff4757; margin-top: 0; }
-        #secret-gift p { color: #555; font-size: 1.1rem; line-height: 1.6; }
+        
+        /* CSS CHỈNH 2 TẤM ẢNH */
+        .photo-frame {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .photo-frame img {
+            width: 45%; /* Ảnh chiếm 45% chiều rộng */
+            height: 200px; /* Chiều cao cố định */
+            object-fit: cover; /* Tự cắt ảnh cho vừa khung */
+            border-radius: 10px;
+            border: 3px solid #ff9a9e;
+        }
+
+        #secret-gift h2 { color: #ff4757; margin: 10px 0; }
+        #secret-gift p { color: #555; font-size: 1.1rem; line-height: 1.5; margin-bottom: 15px; }
         .close-btn {
-            margin-top: 20px;
             padding: 8px 20px;
             background: #555;
             color: white;
@@ -93,20 +101,18 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
         @keyframes popup {
             from { transform: scale(0); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* 5. Hiệu ứng tim bay */
+        /* 5. Tim bay */
         .heart {
             position: absolute;
-            bottom: -20px;
             color: #ff4757;
-            font-size: 20px;
-            animation: fly 5s linear infinite;
+            animation: fly 5s linear forwards;
             opacity: 0;
+            pointer-events: none; /* Không che mất nút bấm */
         }
         @keyframes fly {
             0% { transform: translateY(0) scale(1); opacity: 1; }
@@ -127,48 +133,65 @@
     </div>
 
     <div id="secret-gift">
+        <div class="photo-frame">
+            <img src="anh1.jpg" alt="Ảnh 1">
+            <img src="anh2.jpg" alt="Ảnh 2">
+        </div>
+        
         <h2>Gửi cậu! ❤️</h2>
         <p>
             Cảm ơn vì đã luôn ở bên cạnh mình.<br>
             Món quà này không lớn, nhưng chứa đựng<br>
             cả tấm lòng siêu to khổng lồ của mình.<br>
-            <b>Yêu cậu nhiều lắm! (hoặc Thay lời muốn nói...)</b>
+            <b>Yêu cậu nhiều lắm!</b>
         </p>
         <button class="close-btn" onclick="closeGift()">Đóng lại</button>
     </div>
 
     <script>
-        // Hàm mở hộp quà
+        // Hàm mở hộp quà + Nổ tim
         function openGift() {
-            document.querySelector('.main-btn').style.display = 'none'; // Ẩn nút bấm
-            document.getElementById('secret-gift').style.display = 'block'; // Hiện hộp quà
+            document.querySelector('.main-btn').style.display = 'none';
+            document.getElementById('secret-gift').style.display = 'block';
+            
+            // Hiệu ứng nổ tim bùm chíu (tạo 100 trái tim cùng lúc)
+            for(let i = 0; i < 100; i++) {
+                setTimeout(createBurstHeart, i * 20); // Mỗi 20ms bắn ra 1 tim
+            }
         }
 
-        // Hàm đóng hộp quà (nếu muốn xem lại nút)
         function closeGift() {
             document.getElementById('secret-gift').style.display = 'none';
             document.querySelector('.main-btn').style.display = 'block';
         }
 
-        // Hàm tạo mưa tim
+        // Tạo tim bay nền (nhẹ nhàng)
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
             heart.innerHTML = '❤️'; 
-            heart.style.left = Math.random() * 100 + 'vw'; // Vị trí ngẫu nhiên chiều ngang
-            heart.style.animationDuration = Math.random() * 2 + 3 + 's'; // Tốc độ bay ngẫu nhiên
-            heart.style.fontSize = Math.random() * 20 + 20 + 'px'; // Kích thước ngẫu nhiên
-            
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.bottom = '-20px';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            heart.style.fontSize = Math.random() * 20 + 20 + 'px';
             document.body.appendChild(heart);
-
-            // Xóa tim sau khi bay xong để nhẹ máy
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
+            setTimeout(() => heart.remove(), 5000);
         }
+        setInterval(createHeart, 300); // 0.3s ra 1 tim nền
 
-        // Cứ 0.3 giây tạo 1 trái tim
-        setInterval(createHeart, 300);
+        // Tạo tim nổ (khi bấm nút)
+        function createBurstHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = ['❤️', '💖', '💝', '💕'][Math.floor(Math.random() * 4)]; // Random loại tim
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.bottom = '0px';
+            // Tốc độ bay siêu nhanh
+            heart.style.animationDuration = Math.random() * 2 + 1 + 's'; 
+            heart.style.fontSize = Math.random() * 30 + 30 + 'px'; // Tim to hơn
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
     </script>
 </body>
 </html>
