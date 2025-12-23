@@ -6,12 +6,11 @@
     <title>Gửi Cậu ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. CẤU HÌNH & RESET --- */
+        /* --- 1. CẤU HÌNH CHUNG --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             margin: 0; padding: 0;
             height: 100vh;
-            /* Gradient màu hồng phấn siêu xinh */
             background: linear-gradient(182deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
             font-family: 'Nunito', sans-serif;
             overflow: hidden;
@@ -19,20 +18,13 @@
             user-select: none;
         }
 
-        /* --- 2. BACKGROUND CANVAS --- */
-        #main-canvas {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
-        }
-
-        /* --- 3. MARQUEE (CHỮ CHẠY) --- */
+        #main-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        
+        /* --- MARQUEE --- */
         .marquee-container {
             position: absolute; top: 20px; width: 100%;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(2px);
+            background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(2px);
             padding: 8px 0; overflow: hidden; z-index: 20;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         .marquee-text {
             white-space: nowrap; display: inline-block;
@@ -42,84 +34,164 @@
         }
         @keyframes scroll { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
 
-        /* --- 4. CÁC MÀN HÌNH (SCREENS) --- */
+        /* --- SCREENS --- */
         .container {
-            position: relative; z-index: 10;
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            perspective: 1000px;
+            position: relative; z-index: 10; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-
         .screen {
-            position: absolute;
-            width: 100%; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none;
             transform: scale(0.9) translateY(20px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.5s ease;
         }
-        .screen.active {
-            opacity: 1; pointer-events: auto;
-            transform: scale(1) translateY(0);
-        }
+        .screen.active { opacity: 1; pointer-events: auto; transform: scale(1) translateY(0); }
 
-        /* SCREEN 1: HỘP QUÀ */
+        /* --- UI ELEMENTS --- */
         .gift-box {
             font-size: 6rem; cursor: pointer;
             filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));
             animation: float 2.5s ease-in-out infinite;
-            transition: transform 0.2s;
         }
-        .gift-box:active { transform: scale(0.9); }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* SCREEN 2: CÂU HỎI */
+        /* Card (Form trắng) */
         .card {
             background: rgba(255, 255, 255, 0.9);
             padding: 30px 20px; border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             text-align: center; width: 90%; max-width: 420px;
+            position: relative;
+            transition: all 0.3s ease;
         }
-        .card h1 {
+        .card h1, .card h2 {
             color: #ff4757; font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem; margin-bottom: 25px; margin-top: 0;
+            margin-top: 0;
         }
-        .btn-group { display: flex; gap: 15px; justify-content: center; align-items: center; }
+        .card h1 { font-size: 2.5rem; margin-bottom: 25px; }
+
+        /* --- GAME 1 STYLES (TRONG SUỐT - GIỐNG FILE 1) --- */
+        .game-container {
+            text-align: center; color: white; width: 100%;
+        }
+        .score-board {
+            font-size: 2rem; font-weight: bold; margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            font-family: 'Dancing Script', cursive;
+        }
+        .click-heart {
+            font-size: 8rem; cursor: pointer;
+            transition: transform 0.1s;
+            filter: drop-shadow(0 5px 15px rgba(255, 71, 87, 0.4));
+            user-select: none; -webkit-user-select: none;
+        }
+        .click-heart:active { transform: scale(0.85); }
+        .progress-bar {
+            width: 80%; max-width: 300px; height: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px; margin: 20px auto;
+            overflow: hidden; border: 2px solid white;
+        }
+        .progress-fill { height: 100%; width: 0%; background: #ff4757; transition: width 0.2s; }
+
+        /* --- GAME 2 STYLES (FORM TRẮNG - GIỐNG FILE 2) --- */
+        .timing-game-area {
+            width: 100%; max-width: 350px;
+            background: rgba(255,255,255,0.9);
+            padding: 20px; border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .level-badge {
+            background: #e17055; color: white; padding: 5px 15px; 
+            border-radius: 15px; font-size: 0.9rem; font-weight: bold; 
+            margin-bottom: 10px; display: inline-block;
+        }
+        .bar-container {
+            width: 100%; height: 40px;
+            background: #dfe6e9; border-radius: 20px;
+            position: relative; margin: 20px 0;
+            overflow: hidden; border: 3px solid #636e72;
+        }
+        .target-zone { position: absolute; top: 0; bottom: 0; background: #ff7675; opacity: 0.8; }
+        .moving-cursor { position: absolute; top: -5px; bottom: -5px; width: 4px; background: #d63031; box-shadow: 0 0 10px #d63031; left: 0%; z-index: 10; }
+        .game-msg { font-weight: bold; min-height: 1.5rem; margin-bottom: 5px; color: #d63031; }
+
+        /* --- BUTTONS --- */
+        .btn-group {
+            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px;
+        }
         .btn {
             padding: 12px 30px; font-size: 1.1rem; border: none; border-radius: 50px;
-            cursor: pointer; font-weight: 800; transition: all 0.2s; outline: none;
+            cursor: pointer; font-weight: 800; transition: all 0.2s; outline: none; margin: 5px;
+            white-space: nowrap;
         }
         .btn-yes { background: #ff4757; color: white; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); }
         .btn-yes:active { transform: scale(0.95); }
-        .btn-no { background: #dfe6e9; color: #636e72; position: relative; transition: transform 0.2s ease; }
+        .btn-no { background: #dfe6e9; color: #636e72; transition: transform 0.1s ease; position: relative; }
 
-        /* SCREEN 3: KẾT QUẢ */
-        .result-img {
-            display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;
+        /* --- DAYS COUNTER --- */
+        .days-wrapper {
+            position: relative; width: 180px; height: 180px; margin: 0 auto 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .result-img img {
-            width: 45%; height: 160px; object-fit: cover; border-radius: 12px;
-            border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform: rotate(-5deg);
+        .heart-ring {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border: 2px dashed #ff4757; border-radius: 50%;
+            animation: spinRing 10s linear infinite;
         }
-        .result-img img:last-child { transform: rotate(5deg); }
+        .heart-ring::after {
+            content: '❤️'; position: absolute; top: -12px; left: 50%;
+            transform: translateX(-50%); font-size: 1.5rem; background: white; padding: 0 5px;
+        }
+        @keyframes spinRing { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .days-number { font-size: 3rem; font-weight: 800; color: #ff4757; line-height: 1; z-index: 2; }
+
+        /* STICKER */
+        .sticker-img { position: absolute; width: 80px; z-index: 25; pointer-events: none; }
+        .st-1 { top: -60px; left: -30px; transform: rotate(-15deg); }
+        .st-2 { top: -70px; right: -25px; transform: rotate(10deg); width: 70px; }
+        .st-3 { bottom: -40px; left: -20px; transform: rotate(5deg); width: 75px; }
+        .st-4 { bottom: -50px; right: -30px; transform: rotate(-5deg); }
+
+        /* --- TIMELINE --- */
+        .timeline-title {
+            text-align: center; color: #fff; 
+            font-family: 'Dancing Script', cursive; 
+            font-size: 3rem; margin-bottom: 20px; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .scroll-wrapper {
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+            padding: 20px; gap: 20px; width: 100%;
+        }
+        .scroll-wrapper::-webkit-scrollbar { display: none; }
+        .memory-card {
+            flex: 0 0 80%; max-width: 300px; background: white; border-radius: 15px; padding: 15px;
+            scroll-snap-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .memory-card img { width: 100%; height: 250px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
         
-        /* POPUP SAD */
-        #sad-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 100;
-            display: none; align-items: center; justify-content: center;
-            backdrop-filter: blur(3px);
+        .memory-title {
+            font-family: 'Dancing Script', cursive;
+            color: #ff4757; font-size: 1.5rem; margin: 5px 0; font-weight: bold;
         }
-        .sad-modal {
-            background: white; padding: 25px; border-radius: 20px;
-            text-align: center; width: 85%; max-width: 300px;
-            animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-        }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .sad-modal img { width: 140px; margin-bottom: 10px; border-radius: 10px; }
+        .memory-text { font-size: 0.95rem; color: #555; margin-bottom: 5px; }
 
+        .last-card h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem; color: white; margin: 0;
+        }
+
+        /* --- POPUP SAD --- */
+        #sad-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px);
+        }
+        .sad-modal { background: white; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 300px; }
+        .sad-modal img { width: 120px; margin-bottom: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -134,65 +206,124 @@
 
     <div class="container">
         <div id="screen-1" class="screen active">
-            <div class="gift-box" onclick="nextScreen(2)">🎁</div>
-            <p style="color: #fff; font-weight: bold; margin-top: 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Mở quà đi nào!</p>
+            <div class="gift-box" onclick="nextScreen('screen-2')">🎁</div>
+            <p style="color: #fff; font-weight: bold; margin-top: 15px;">Mở quà đi nào!</p>
         </div>
 
         <div id="screen-2" class="screen">
             <div class="card">
-                <h1>❤️</h1>
+                <h1>Làm người yêu tớ nhé? ❤️</h1>
                 <div class="btn-group">
-                    <button id="btn-yes" class="btn btn-yes" onclick="finishLove()">Okii lun! 😽</button>
+                    <button id="btn-yes" class="btn btn-yes" onclick="startGame1()">Okii lun! 😽</button>
                     <button id="btn-no" class="btn btn-no" onclick="rejectLove()" onmouseover="moveBtn(this)" ontouchstart="moveBtn(this)">Khồngg</button>
                 </div>
             </div>
         </div>
 
-        <div id="screen-3" class="screen">
-            <div class="card" style="background: rgba(255,255,255,0.95);">
-                <div class="result-img">
-                    <img src="https://raw.githubusercontent.com/haingo03/NTN/refs/heads/main/images/images1.png" alt="Ảnh 1">
-                    <img src="https://raw.githubusercontent.com/haingo03/NTN/refs/heads/main/images/images2.png" alt="Ảnh 2">
+        <div id="screen-game-1" class="screen">
+            <div class="game-container">
+                <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">Bé yêu Hải nhiều như thế nào ?</h2>
+                <p style="font-size: 0.9rem; margin-top: 0; opacity: 0.9;">Khó biết </p>
+                
+                <div class="score-board">Điểm: <span id="score">0</span> / 1000</div>
+                
+                <div class="click-heart" onclick="clickHeart(event)">❤️</div>
+                
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
                 </div>
-                <h2 style="color: #ff4757; font-family: 'Dancing Script'; font-size: 2.2rem; margin: 5px 0;">Yêu cậu nhắm! ❤️</h2>
-                <p style="color: #555; line-height: 1.5;">
-                    Cảm ơn cậu đã đồng ý.<br>
-                    Tớ hứa sẽ ngoan và nghe lời.<br>
-                    Nhắn tin cho tớ đi! 💑
-                </p>
+            </div>
+        </div>
+
+        <div id="screen-game-2" class="screen">
+            <div class="timing-game-area">
+                <div class="level-badge" id="level-indicator">Level 1/3</div>
+                <h2 style="font-family: 'Dancing Script'; font-size: 2.2rem; color: #ff4757; margin-top: 5px;">Bắt lấy trái tim!</h2>
+                <p style="font-size: 0.9rem; color: #555;">Bấm nút khi thanh đỏ đi vào vùng hồng!</p>
+                
+                <div id="game-msg" class="game-msg"></div>
+
+                <div class="bar-container">
+                    <div id="target-zone" class="target-zone"></div>
+                    <div id="moving-cursor" class="moving-cursor"></div>
+                </div>
+
+                <button class="btn btn-yes" onclick="checkHit()">BẮT NGAY ❤️</button>
+            </div>
+        </div>
+
+        <div id="screen-days" class="screen">
+            <div class="card" style="padding-top: 50px; overflow: visible;">
+                <img src="https://scontent.xx.fbcdn.net/v/t39.1997-6/49074053_2170707729814069_7993984291719610368_n.png?_nc_cat=1&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=ePbTqLpsblwQ7kNvwEAhFcZ&_nc_oc=AdmTt6fTH9Negumdh0jD-FC2DajVsXlUVOiXMKgbhH55cmd9MeC__gpEmP2sHXAZY21nPVhsa1VvQ8UviR8CW4ro&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=rMC2Jvr35S6I-E5nMYSRUw&oh=00_AfkQuc-NkPi7IPPVXmFmnZyhTjcXSqVuGqVlY3lO3c5J1Q&oe=694B3D85" class="sticker-img st-1">
+                <img src="https://scontent.xx.fbcdn.net/v/t39.1997-6/16781536_1458999214131855_5055034120636203008_n.png?_nc_cat=1&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=r9ljEfD9xeUQ7kNvwHfYzJj&_nc_oc=AdkhIoDBm2LuWCCkkMfGqM7vjHAAi8d-HAvxRm3vSe8fPZUqU1nbWZVLJaNAjR7uRBl9Hx3LNUPaniiYZlFhTpw8&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=cAsqIse0TuahEkhFmf7SzQ&oh=00_Afl8hunOlyBLTjSv66q8YsJDEZVin7LRJnPPDllfCTjwsQ&oe=694C1F78" class="sticker-img st-2">
+                <img src="https://scontent.xx.fbcdn.net/v/t39.1997-6/10935981_698963283549481_711278537_n.png?_nc_cat=1&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=7rJ3In2nQVgQ7kNvwGBSrQG&_nc_oc=Adka7AzaCOtFxLDdV7CoQC2X8vOHkSTE2y1P00H12LFiOYUhsoLxPxK6V094iWkCHsOP4HkEQIq6vn6TIav13RKN&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=Ti1bE-LuoUZmLBE_tzyY4Q&oh=00_AfnCLxb1c60HURDHDyHi3nrexeXfcADKxjhXaCOYw_y2Qw&oe=695069F8" class="sticker-img st-3">
+                <img src="https://scontent.xx.fbcdn.net/v/t39.1997-6/48891366_2170713239813518_8520200227376857088_n.png?_nc_cat=108&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=sPpJ9sz3XJoQ7kNvwEn8q6A&_nc_oc=AdkoMPCNbQGt4qDHefy6sjQZ2CakKPfa5F_UTKig17tnkDqrbWRWkz8iYFIRYWmgtIp71jgTHGsrwANKDKmFPgC9&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=ziY6ih4asymlZVkt5auGiA&oh=00_AfmoEtBwxYDtp-fFtJfGwSPBilNv7CT2dWdztAOwmzy9Yg&oe=69506DE0" class="sticker-img st-4">
+
+                <h2 style="color: #ff4757; font-family: 'Dancing Script'; font-size: 2rem; margin: 0 0 15px 0;">Chúng mình đã bên nhau</h2>
+                <div class="days-wrapper">
+                    <div class="heart-ring"></div>
+                    <div id="days-count" class="days-number">0</div>
+                </div>
+                <p style="color: #555; margin-bottom: 20px;">Ngày hạnh phúc ❤️</p>
+                <button class="btn btn-yes" onclick="nextScreen('screen-timeline')">Xem kỷ niệm</button>
+            </div>
+        </div>
+
+        <div id="screen-timeline" class="screen">
+            <div style="width: 100%; text-align: center;">
+                <h1 class="timeline-title">Hành trình tình yêu</h1>
+                <div class="scroll-wrapper">
+                    <div class="memory-card">
+                        <img src="https://raw.githubusercontent.com/haingo03/NTN/refs/heads/main/images/images1.png" alt="Ảnh 1">
+                        <div class="memory-title">Ngày đầu tiên</div>
+                        <p class="memory-text">Nhớ cái ngày ngây ngô ấy ghê!</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="https://raw.githubusercontent.com/haingo03/NTN/refs/heads/main/images/images2.png" alt="Ảnh 2">
+                        <div class="memory-title">Buổi hẹn hò</div>
+                        <p class="memory-text">Đi chơi vui ơi là vui nè.</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=500&q=60" alt="Ảnh 3">
+                        <div class="memory-title">Kỷ niệm...</div>
+                        <p class="memory-text">Nhập kỷ niệm của bạn vào đây nhé.</p>
+                    </div>
+                     <div class="memory-card">
+                        <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=500&q=60" alt="Ảnh 4">
+                        <div class="memory-title">Đi du lịch</div>
+                        <p class="memory-text">Chuyến đi đáng nhớ nhất.</p>
+                    </div>
+                    <div class="memory-card last-card" style="background: #ff4757; color: white; justify-content: center;">
+                        <h2>Yêu Cậu! ❤️</h2>
+                        <p style="margin-top: 10px; font-size: 1.1rem;">Cảm ơn vì đã ở bên tớ.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="sad-overlay">
         <div class="sad-modal">
-            <img src="https://media.giphy.com/media/OPU6wzx8JrHna/giphy.gif" alt="Sad Cat">
-            <h3 style="color: #ff4757; margin: 0 0 10px;">Đừng mà... 😭</h3>
-            <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Thử lại lần nữa đi!</p>
-            <button class="btn btn-yes" onclick="closeSad()">Chọn lại</button>
+            <img id="sad-img" src="https://scontent.xx.fbcdn.net/v/t39.1997-6/16684984_1458993974132379_8795383253092532224_n.png?_nc_cat=1&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=BawVVTCEDiYQ7kNvwHC7f9G&_nc_oc=AdkCxfVLDIio5zep0DjMLyY_wieMsviqgX1YNKz7TZo7ALtn7IelNvsCipatyUnohWgb0JwQh4r-V8yYTc_BdcCM&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=oo9mdxYRd8ue9UnJBaddlQ&oh=00_AfmmBfYbvuuftxXZtOfG95z_z8nQ4qeTkLj5tZN2SokiDA&oe=694B42F1">
+        
+            <h3 id="sad-text">Đừng mà... 😭</h3>
+        
+            <button class="btn btn-yes" onclick="closeSad()">Thử lại</button>
         </div>
     </div>
 
     <script>
-        /* =================================================================
-           PHẦN 1: LOGIC CANVAS (Kết hợp tim bay nền + Tim lớn xếp hình)
-           ================================================================= */
+        const START_DATE = "2025-10-20"; 
+
         const canvas = document.getElementById('main-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
 
-        // --- Cấu hình Tim nền (Nhẹ) ---
         class FloatingHeart {
-            constructor() {
-                this.reset(true);
-            }
+            constructor() { this.reset(true); }
             reset(init = false) {
                 this.x = Math.random() * width;
                 this.y = init ? Math.random() * height : height + 20;
@@ -200,21 +331,16 @@
                 this.speed = Math.random() * 1.5 + 0.5;
                 this.opacity = Math.random() * 0.5 + 0.1;
             }
-            update() {
-                this.y -= this.speed;
-                if(this.y < -30) this.reset();
-            }
-            draw() {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-                ctx.font = `${this.size}px Arial`;
-                ctx.fillText('❤️', this.x, this.y);
+            update() { this.y -= this.speed; if(this.y < -30) this.reset(); }
+            draw() { 
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; 
+                ctx.font = `${this.size}px Arial`; ctx.fillText('❤️', this.x, this.y); 
             }
         }
-        const hearts = Array.from({length: 40}, () => new FloatingHeart());
+        const floatHearts = Array.from({length: 40}, () => new FloatingHeart());
 
-        // --- Cấu hình Tim lớn ---
         let bigHeartParticles = [];
-        let isFinalState = false;
+        let isBigHeartActive = false;
 
         function getHeartPoint(t) {
             return {
@@ -223,134 +349,269 @@
             };
         }
 
-        class BigHeartParticle {
+        class HeartParticle {
             constructor(t) {
                 const pos = getHeartPoint(t);
-                this.scale = (Math.min(width, height) / 40); 
-                this.baseX = width/2 + pos.x * this.scale;
-                this.baseY = height/2 + pos.y * this.scale;
+                this.scale = Math.min(width, height) / 45;
+                this.baseX = width / 2 + pos.x * this.scale;
+                this.baseY = height / 2 + pos.y * this.scale;
                 this.x = this.baseX; this.y = this.baseY;
                 this.size = Math.random() * 2 + 1;
                 this.color = '#ff4757';
             }
             update() {
-                const beat = 1 + Math.sin(Date.now() * 0.005) * 0.05;
+                const beat = 1 + Math.sin(Date.now() * 0.006) * 0.05;
                 this.x = width/2 + (this.baseX - width/2) * beat;
                 this.y = height/2 + (this.baseY - height/2) * beat;
             }
             draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-                ctx.fill();
+                ctx.fillStyle = this.color; ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
+        }
+
+        function initBigHeart() {
+            bigHeartParticles = [];
+            for(let i=0; i<300; i++) {
+                bigHeartParticles.push(new HeartParticle(Math.random() * Math.PI * 2));
+            }
+            isBigHeartActive = true;
         }
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
-            hearts.forEach(h => { h.update(); h.draw(); });
-            if(isFinalState) {
+            floatHearts.forEach(h => { h.update(); h.draw(); });
+            if(isBigHeartActive) {
                 bigHeartParticles.forEach(p => { p.update(); p.draw(); });
             }
             requestAnimationFrame(animate);
         }
         animate();
 
-        /* =================================================================
-           PHẦN 2: LOGIC GIAO DIỆN (UI) - ĐÃ CHỈNH SỬA
-           ================================================================= */
+        /* --- LOGIC CỐT LÕI NÚT KHÔNG (GIỐNG FILE 1) --- */
         let countNo = 0;
-
         function nextScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            if(typeof id === 'number') document.getElementById(`screen-${id}`).classList.add('active');
-            else document.getElementById(id).classList.add('active');
+            document.getElementById(id).classList.add('active');
         }
-
-        // Logic khi bấm nút Không
-        function rejectLove() {
-            countNo++;
-            document.getElementById('sad-overlay').style.display = 'flex';
+        
+        
+        /* --- DANH SÁCH ẢNH VÀ CÂU NÓI BUỒN --- */
+    const sadCollection = [
+        {
+            img: "https://scontent.xx.fbcdn.net/v/t39.1997-6/16684984_1458993974132379_8795383253092532224_n.png?_nc_cat=1&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=BawVVTCEDiYQ7kNvwHC7f9G&_nc_oc=AdkCxfVLDIio5zep0DjMLyY_wieMsviqgX1YNKz7TZo7ALtn7IelNvsCipatyUnohWgb0JwQh4r-V8yYTc_BdcCM&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=oo9mdxYRd8ue9UnJBaddlQ&oh=00_AfmmBfYbvuuftxXZtOfG95z_z8nQ4qeTkLj5tZN2SokiDA&oe=694B42F1",
+            text: "Hết yêu rồii"//mèo ủ rũ
+        },
+        {
+            img: "https://scontent.xx.fbcdn.net/v/t39.1997-6/193374358_4070787276301793_3027081218150209491_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=FLz4JzQmteIQ7kNvwF_si-Z&_nc_oc=AdmQMLoQSKKndhWRvgKJhau9krW8y_c9OSbGrl8Jk2pvuND9Ec_OY9XlDFYsDvFmbQ2VdO3BZTzWlPoI7dyUlDE9&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=iapluzoGBvmC0yJ_sPm2hg&oh=00_AfnPf0kAcM5q4iRDuuaJlGvh9zm8j0DYqAwvsejw3R4BHQ&oe=694F5B20",
+            text: "Nhi chán rồi..."//mèo + box
+        },
+        {
+            img: "https://scontent.xx.fbcdn.net/v/t39.1997-6/69396440_865572503842617_5557573026872033280_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=t7GYOHvfvkYQ7kNvwEvSqIW&_nc_oc=Adk-hrYTG7TCcemSonrT80__4yWjWHDAO-LW9zWtud0sfMjRMTip3PJS7WKvpmV9icqbGef9PUetvoIC-1tegwFi&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=RR001k1v4velHjJdP7tGpw&oh=00_AfndTRrhbkyxsvXKcKm-v5A4CS9lNLZGRCFuV7j4rUXwyA&oe=694ED924",
+            text: "????"//bọt biển sợ hãi
+        },
+        {
+            img: "https://scontent.xx.fbcdn.net/v/t39.1997-6/16685015_1458994064132370_3866272707377102848_n.png?_nc_cat=1&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=-rBC4zKdIs0Q7kNvwG7gKmt&_nc_oc=Adk3gYXNi96w07bjyc8Dez4gWwAVMH6_uCWGd8eArTu7TtcR8HpeMrwFEBZgNFzEZzrqXk9uciSUTDCutnWe80Xr&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=oJD18ZwJmTGpiVsWJ8ySkg&oh=00_AfnGAsFQKX0ZgGAneUB0GNhxbbSF7tVnxs6jIlyghX3OyA&oe=694CABDC",
+            text: "Thiệt hở ??!!"//mèo đóng bằng
+        },
+        {
+            img: "https://scontent.xx.fbcdn.net/v/t39.1997-6/136547201_254594192670618_4642482078206390366_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=ef9b6e&_nc_ohc=v-fbbWW7VOoQ7kNvwEvEtEU&_nc_oc=Adkb_j31bhj-aG5venjfRaizb_m1r9rekP-lWVOGiBfUyWbVoTcFbkrGqpR1C3MLGdZ0sHCyNuRp1K2QK3cYGy2_&_nc_zt=26&_nc_ht=scontent.xx&_nc_gid=pIHHXvPEdNYlYH74ee6tAw&oh=00_AfkSQNL0JvszVUcKaxPyLrugotkrje7Nh19H1lxONjEWfg&oe=69508306",
+            text: "Chán người ta rồi..."//bỏ điện thoại
         }
+    ];
 
-        // Logic nút Không chạy trốn
+function rejectLove() {
+    countNo++; 
+    
+    // 1. Chọn ngẫu nhiên một kiểu buồn trong danh sách trên
+    const randomIndex = Math.floor(Math.random() * sadCollection.length);
+    const selectedSad = sadCollection[randomIndex];
+
+    // 2. Thay đổi ảnh và chữ
+    document.getElementById('sad-img').src = selectedSad.img;
+    document.getElementById('sad-text').innerText = selectedSad.text;
+
+    // 3. Hiện bảng lên
+    document.getElementById('sad-overlay').style.display = 'flex';
+}
+        
+        
+        // Logic: Nút Không chạy trốn khi di chuột vào (Chỉ khi bấm sai >= 4 lần)
         function moveBtn(btn) {
-            // CHỈNH SỬA: Chỉ khi bấm No >= 3 lần thì nút mới bắt đầu chạy
-            if (countNo >= 4 ) {
-                const maxX = 150;
-                const maxY = 150;
-                const x = (Math.random() - 0.5) * maxX * 2;
-                const y = (Math.random() - 0.5) * maxY * 2;
+            if (countNo >= 4) {
+                const x = (Math.random() - 0.5) * 300; // Tăng khoảng cách chạy
+                const y = (Math.random() - 0.5) * 300;
                 btn.style.transform = `translate(${x}px, ${y}px)`;
             }
         }
 
+        // Logic: Đóng popup khóc -> Tăng kích thước nút Yes (Đè bẹp nút No)
         function closeSad() {
             document.getElementById('sad-overlay').style.display = 'none';
-            
             const btnYes = document.getElementById('btn-yes');
             const btnNo = document.getElementById('btn-no');
             
-            // Tăng kích thước nút Yes
-            let currentPad = parseInt(window.getComputedStyle(btnYes).paddingTop);
-            btnYes.style.padding = `${currentPad * 2}px ${currentPad *2}px`;
-            btnYes.style.fontSize = `${1.1 + (countNo * 0.01)}rem`;
-            
-            // Đổi chữ nút Yes cho thuyết phục
-            const texts = ["Thôi mà yêu thì nói chứ ", "Không yêu người ta thật á ", "THẬT!!!???", "YÊU ĐI MÀ!!", "Phải yêu tôiiiii",];
-            btnYes.innerText = texts[Math.min(countNo-1, 8)] || "Phải yêuuuu ";
+            // Tăng padding và font-size cho nút Yes mỗi lần đóng popup
+            // Đây chính là logic bạn cần: Nút Yes to dần lên
+            let currentSize = parseFloat(window.getComputedStyle(btnYes).fontSize);
+            let currentPadTop = parseFloat(window.getComputedStyle(btnYes).paddingTop);
+            let currentPadRight = parseFloat(window.getComputedStyle(btnYes).paddingRight);
 
-            // CHỈNH SỬA: Đổi chữ nút No khi bắt đầu chế độ chạy trốn (Lần 3)
-            if (countNo >= 3 && countNo < 4 ) {
-                btnNo.innerText = "Chắc chưa";
+            btnYes.style.fontSize = `${currentSize * 1.8}px`;
+            btnYes.style.padding = `${currentPadTop * 1.8}px ${currentPadRight * 1.8}px`;
+
+            // Thay đổi chữ nút No cho sinh động
+            const noTexts = ["Chắc chưa?", "Thôi mà...", "Lì quá nha", "Đừng cố chấp!", "Tôi bảo em phải yêu tôii"];
+            if (countNo <= noTexts.length) {
+                btnNo.innerText = noTexts[countNo - 1];
+            } else {
+                btnNo.innerText = "Huhu 😭";
             }
             
-            if (countNo >= 4 && countNo < 5 ) {
-                btnNo.innerText = "Lì hả ?";
-            }
+            // Thay đổi chữ nút Yes
+            const yesTexts = ["Thương mà yêu đi ❤️", "Đừng dỗi nữa 😘", "YÊU ĐI MÀ!!", "Phải yêu tôiiiii"];
+            btnYes.innerText = yesTexts[Math.min(countNo, yesTexts.length - 1)];
+        }
+
+        /* --- GAME 1 --- */
+        let score = 0; 
+        const maxScore = 1000; 
+        function startGame1() { nextScreen('screen-game-1'); }
+        
+        function clickHeart(e) {
+            const points = Math.floor(Math.random() * 150) + 300; 
+            score += points;
+            if(score > maxScore) score = maxScore;
             
-            if (countNo >= 5 && countNo < 6 ) {
-                btnNo.innerText = "Đừng cố chấp nữa!! ";
+            document.getElementById('score').innerText = score;
+            document.getElementById('progress-fill').style.width = `${(score/maxScore)*100}%`;
+            
+            createFloatingPoints(e.clientX, e.clientY, points);
+
+            if(score >= maxScore) {
+                setTimeout(() => { 
+                    alert("Giỏi quá! Qua màn 2 nhé!"); 
+                    startTimingGame(); 
+                }, 300);
             }
         }
 
-        function finishLove() {
-            nextScreen(3);
-            isFinalState = true;
-            for(let i=0; i<250; i++) {
-                bigHeartParticles.push(new BigHeartParticle(Math.random() * Math.PI * 2));
+        function createFloatingPoints(x, y, val) {
+            const el = document.createElement('div');
+            el.innerText = `+${val}`; 
+            el.style.position = 'fixed'; el.style.left = x + 'px'; el.style.top = y + 'px';
+            el.style.color = '#fff'; el.style.fontWeight = 'bold'; el.style.fontSize = '1.5rem';
+            el.style.pointerEvents = 'none'; el.style.zIndex = 999;
+            el.style.textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+            document.body.appendChild(el);
+            el.animate([
+                { transform: 'translateY(0)', opacity: 1 },
+                { transform: 'translateY(-60px)', opacity: 0 }
+            ], { duration: 600 }).onfinish = () => el.remove();
+        }
+
+        /* --- GAME 2 --- */
+        let gameInterval, cursorPos = 0, direction = 1, isRunning = false;
+        let curLevel = 1;
+        
+        const levels = [
+            { speed: 1.5, width: 30, text: "Level 1: Dễ ợt à!" },
+            { speed: 2.0, width: 20, text: "Level 2: Nhanh hơn xíu!" },
+            { speed: 3.0, width: 20, text: "Level 3: Siêu khó nè!" }
+        ];
+
+        let targetStart, targetWidth, currentSpeed;
+
+        function startTimingGame() {
+            nextScreen('screen-game-2');
+            setupLevel(1);
+        }
+
+        function setupLevel(lv) {
+            curLevel = lv;
+            const cfg = levels[lv - 1];
+            currentSpeed = cfg.speed; targetWidth = cfg.width;
+            
+            document.getElementById('level-indicator').innerText = `Level ${lv}/3`;
+            document.getElementById('game-msg').innerText = cfg.text;
+            document.getElementById('game-msg').style.color = "#d63031";
+
+            targetStart = Math.floor(Math.random() * (90 - targetWidth)) + 5;
+            const zone = document.getElementById('target-zone');
+            zone.style.left = targetStart + '%';
+            zone.style.width = targetWidth + '%';
+
+            cursorPos = 0; isRunning = true;
+            if(gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(() => {
+                if(!isRunning) return;
+                cursorPos += currentSpeed * direction;
+                if(cursorPos >= 100 || cursorPos <= 0) direction *= -1;
+                document.getElementById('moving-cursor').style.left = cursorPos + '%';
+            }, 20);
+        }
+
+        function checkHit() {
+            if(!isRunning) return;
+            isRunning = false; clearInterval(gameInterval);
+
+            if(cursorPos >= targetStart && cursorPos <= (targetStart + targetWidth)) {
+                fireConfetti();
+                if(curLevel < 3) {
+                    document.getElementById('game-msg').innerText = "Đỉnh chóp! Lên cấp!";
+                    document.getElementById('game-msg').style.color = "green";
+                    setTimeout(() => setupLevel(curLevel + 1), 1000);
+                } else {
+                    document.getElementById('game-msg').innerText = "CHIẾN THẮNG!!! ❤️";
+                    setTimeout(finishAll, 1000);
+                }
+            } else {
+                document.getElementById('game-msg').innerText = "Hụt rùi! Lại nha!";
+                setTimeout(() => setupLevel(curLevel), 1000);
             }
+        }
+
+        function finishAll() {
+            nextScreen('screen-days');
+            initBigHeart(); 
             fireConfetti();
+            calculateDays(); 
         }
 
-        /* =================================================================
-           PHẦN 3: HIỆU ỨNG PHÁO GIẤY
-           ================================================================= */
+        function calculateDays() {
+            const start = new Date(START_DATE);
+            const now = new Date();
+            const days = Math.floor((now - start) / 86400000);
+            
+            const el = document.getElementById('days-count');
+            let count = 0;
+            const step = Math.max(1, Math.floor(days / 50));
+            
+            const timer = setInterval(() => {
+                count += step;
+                if(count >= days) {
+                    count = days;
+                    clearInterval(timer);
+                }
+                el.innerText = count;
+            }, 30);
+        }
+
         function fireConfetti() {
             const colors = ['#ff7675', '#74b9ff', '#55efc4', '#ffeaa7', '#e84393'];
-            for(let i=0; i<50; i++) {
+            for(let i=0; i<100; i++) {
                 const el = document.createElement('div');
-                el.style.position = 'fixed';
-                el.style.left = '50%'; el.style.top = '50%';
-                el.style.width = '8px'; el.style.height = '8px';
-                el.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
-                el.style.borderRadius = '50%';
-                el.style.zIndex = '999';
+                el.style.position='fixed'; el.style.left='50%'; el.style.top='50%';
+                el.style.width='8px'; el.style.height='8px';
+                el.style.background = colors[Math.floor(Math.random()*5)];
+                el.style.borderRadius='50%'; el.style.zIndex='999';
                 document.body.appendChild(el);
-
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 200 + 100;
-                
-                const anim = el.animate([
-                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
-                    { transform: `translate(${Math.cos(angle)*velocity}px, ${Math.sin(angle)*velocity}px) scale(0)`, opacity: 0 }
-                ], { 
-                    duration: Math.random() * 500 + 500, 
-                    easing: 'cubic-bezier(0.25, 1, 0.5, 1)' 
-                });
-                anim.onfinish = () => el.remove();
+                const a = Math.random()*6.28, v = Math.random()*300+100;
+                el.animate([
+                    {transform:'translate(0,0)', opacity:1},
+                    {transform:`translate(${Math.cos(a)*v}px, ${Math.sin(a)*v}px)`, opacity:0}
+                ], {duration: 1000}).onfinish=()=>el.remove();
             }
-            
         }
     </script>
 </body>
