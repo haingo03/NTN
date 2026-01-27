@@ -155,35 +155,79 @@
         .st-3 { bottom: -40px; left: -20px; transform: rotate(5deg); width: 75px; }
         .st-4 { bottom: -50px; right: -30px; transform: rotate(-5deg); }
 
-        /* --- TIMELINE --- */
-        .timeline-title {
-            text-align: center; color: #fff; 
-            font-family: 'Dancing Script', cursive; 
-            font-size: 3rem; margin-bottom: 20px; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        .scroll-wrapper {
-            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
-            padding: 20px; gap: 20px; width: 100%;
-        }
-        .scroll-wrapper::-webkit-scrollbar { display: none; }
-        .memory-card {
-            flex: 0 0 80%; max-width: 300px; background: white; border-radius: 15px; padding: 15px;
-            scroll-snap-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .memory-card img { width: 100%; height: 250px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
-        
-        .memory-title {
-            font-family: 'Dancing Script', cursive;
-            color: #ff4757; font-size: 1.5rem; margin: 5px 0; font-weight: bold;
-        }
-        .memory-text { font-size: 0.95rem; color: #555; margin-bottom: 5px; }
+/* --- TIMELINE NÂNG CẤP 3D --- */
+.timeline-title {
+    text-align: center;
+    color: #fff; 
+    font-family: 'Dancing Script', cursive; 
+    font-size: 3rem; margin-bottom: 5px; 
+    text-shadow: 0 0 15px #ff4757;
+    animation: glowText 2s ease-in-out infinite alternate;
+}
 
-        .last-card h2 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem; color: white; margin: 0;
-        }
+.scroll-wrapper {
+    display: flex; 
+    overflow-x: auto; 
+    scroll-snap-type: x mandatory;
+    padding: 60px 40px; /* Tăng padding để thẻ nổi lên */
+    gap: 30px; 
+    width: 100%;
+    perspective: 1500px; /* Tạo không gian 3D sâu hơn */
+    scrollbar-width: none;
+    align-items: center;
+}
+.scroll-wrapper::-webkit-scrollbar { display: none; }
+
+.memory-card {
+    flex: 0 0 300px;
+    height: 420px; /* Tăng chiều cao cho sang */
+    position: relative;
+    scroll-snap-align: center;
+    border-radius: 25px;
+    padding: 12px;
+    display: flex; flex-direction: column;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    background: rgba(255, 255, 255, 0.2); /* Trong suốt hơn */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    /* Hiệu ứng nghiêng mặc định */
+    transform: rotateY(-15deg) scale(0.9);
+}
+
+/* Thẻ ở giữa sẽ phóng to và thẳng lại */
+.memory-card:hover {
+    transform: rotateY(0deg) scale(1.1) translateY(-20px);
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 100;
+    box-shadow: 0 30px 60px rgba(255, 71, 87, 0.4);
+}
+
+.img-frame {
+    width: 100%; height: 75%;
+    overflow: hidden; border-radius: 18px;
+    position: relative;
+}
+
+.memory-card img { 
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+
+.date-badge {
+    position: absolute; top: 15px; right: 15px;
+    background: linear-gradient(45deg, #ff4757, #ff6b81);
+    color: white; padding: 6px 15px;
+    border-radius: 30px; font-size: 0.8rem; font-weight: bold;
+    z-index: 5;
+}
+
+.memory-title {
+    font-family: 'Dancing Script', cursive;
+    color: #d63031; font-size: 1.8rem;
+    margin: 15px 0 0px; 
+}
 
         /* --- POPUP SAD --- */
         #sad-overlay {
@@ -192,6 +236,63 @@
         }
         .sad-modal { background: white; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 300px; }
         .sad-modal img { width: 120px; margin-bottom: 10px; border-radius: 10px; }
+        
+        
+        /* Hiệu ứng Cổng Không Gian cho thẻ cuối */
+.last-card {
+    background: linear-gradient(135deg, #6c5ce7, #ff7675) !important;
+    border: 2px solid #fff !important;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.portal-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px; height: 200px;
+    border: 4px dashed rgba(255,255,255,0.5);
+    border-radius: 50%;
+    animation: spinPortal 4s linear infinite;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+@keyframes spinPortal {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.portal-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    background: white;
+    color: #6c5ce7;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.4s;
+}
+
+/* Hiệu ứng khi di chuột (Hover) */
+.last-card:hover .portal-ring {
+    opacity: 1;
+    width: 280px; height: 280px;
+    box-shadow: 0 0 50px rgba(255,255,255,0.8);
+}
+
+.last-card:hover .portal-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.last-card:hover {
+    transform: rotateY(0deg) scale(1.1) rotate(5deg) !important; /* Xoay nhẹ cho ngầu */
+    filter: brightness(1.2);
+}
+        
     </style>
 </head>
 <body>
@@ -269,37 +370,131 @@
             </div>
         </div>
 
-        <div id="screen-timeline" class="screen">
-            <div style="width: 100%; text-align: center;">
-                <h1 class="timeline-title">Hành trình tình yêu</h1>
-                <div class="scroll-wrapper">
-                    <div class="memory-card">
-                        <img src="https://raw.githubusercontent.com/haingo03/NTN/refs/heads/main/images/images1.png" alt="Ảnh 1">
-                        <div class="memory-title">Ngày đầu tiên</div>
-                        <p class="memory-text">Nhớ cái ngày ngây ngô ấy ghê!</p>
-                    </div>
-                    <div class="memory-card">
-                        <img src="https://raw.githubusercontent.com/haingo03/NTN/refs/heads/main/images/images2.png" alt="Ảnh 2">
-                        <div class="memory-title">Buổi hẹn hò</div>
-                        <p class="memory-text">Đi chơi vui ơi là vui nè.</p>
-                    </div>
-                    <div class="memory-card">
-                        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=500&q=60" alt="Ảnh 3">
-                        <div class="memory-title">Kỷ niệm...</div>
-                        <p class="memory-text">Nhập kỷ niệm của bạn vào đây nhé.</p>
-                    </div>
-                     <div class="memory-card">
-                        <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=500&q=60" alt="Ảnh 4">
-                        <div class="memory-title">Đi du lịch</div>
-                        <p class="memory-text">Chuyến đi đáng nhớ nhất.</p>
-                    </div>
-                    <div class="memory-card last-card" style="background: #ff4757; color: white; justify-content: center;">
-                        <h2>Yêu Cậu! ❤️</h2>
-                        <p style="margin-top: 10px; font-size: 1.1rem;">Cảm ơn vì đã ở bên tớ.</p>
-                    </div>
+<div id="screen-timeline" class="screen">
+    <div style="width: 100%; text-align: center;">
+        <h1 class="timeline-title">Hành trình yêu thương ✨</h1>
+        <p style="color: #fff; opacity: 0.8; margin-top: -10px; margin-bottom: 20px;">Lướt sang để xem nè >></p>
+        
+        <div class="scroll-wrapper">
+             
+             <div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+<div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+<div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+<div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+<div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+<div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+<div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+<div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+<div class="memory-card">
+    <div class="date-badge">Kỷ niệm 01</div>
+    <div class="img-frame">
+        <img src="LINK_ẢNH_CỦA_CẬU_TẠI_ĐÂY" alt="Ảnh">
+    </div>
+    <div class="memory-title">Tiêu đề ngọt ngào</div>
+    <p class="memory-text">Lời nhắn nhủ dễ thương ở đây nè... ❤️</p>
+</div>
+             
+            <div class="memory-card">
+                <div class="date-badge">20/10/2023</div> <div class="img-frame">
+                    <img src="https://raw.githubusercontent.com/haingo03/NTN/refs/heads/main/images/images1.png" alt="Ảnh 1">
                 </div>
+                <div class="memory-title">Ngày đầu tiên</div>
+                <p class="memory-text">Khoảnh khắc ánh mắt ta chạm nhau... 😳</p>
             </div>
+
+            <div class="memory-card">
+                <div class="date-badge">14/02/2024</div>
+                <div class="img-frame">
+                    <img src="https://raw.githubusercontent.com/haingo03/NTN/refs/heads/main/images/images2.png" alt="Ảnh 2">
+                </div>
+                <div class="memory-title">Buổi hẹn hò</div>
+                <p class="memory-text">Cùng nhau đi khắp thế gian lun 🛵</p>
+            </div>
+
+            <div class="memory-card">
+                <div class="date-badge">Kỷ niệm vui</div>
+                <div class="img-frame">
+                    <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=500&q=60" alt="Ảnh 3">
+                </div>
+                <div class="memory-title">Món quà nhỏ</div>
+                <p class="memory-text">Bất ngờ chưa nè? Hihi 🎁</p>
+            </div>
+
+             <div class="memory-card">
+                <div class="date-badge">Mùa hè xanh</div>
+                <div class="img-frame">
+                    <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=500&q=60" alt="Ảnh 4">
+                </div>
+                <div class="memory-title">Đi du lịch</div>
+                <p class="memory-text">Nắm tay nhau đi Đà Lạt mộng mơ 🌸</p>
+            </div>
+
+            <div class="memory-card last-card" onclick="openPortal()">
+    <div class="portal-ring"></div> <div style="font-size: 4rem; z-index: 2;">💍</div>
+    <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem; margin: 0; z-index: 2;">Mãi Yêu Cậu!</h2>
+    <p class="memory-text" style="margin-top: 10px; z-index: 2;">Chạm vào để bước vào thế giới mới ❤️</p>
+    
+    <button class="portal-btn">BƯỚC VÀO CỔNG</button>
+</div>
         </div>
+    </div>
+</div>
     </div>
 
     <div id="sad-overlay">
@@ -313,7 +508,7 @@
     </div>
 
     <script>
-        const START_DATE = "2025-10-20"; 
+        const START_DATE = "2025-10-21"; 
 
         const canvas = document.getElementById('main-canvas');
         const ctx = canvas.getContext('2d');
@@ -613,6 +808,19 @@ function rejectLove() {
                 ], {duration: 1000}).onfinish=()=>el.remove();
             }
         }
+        
+        
+        function openPortal() {
+    // Tạo hiệu ứng chuyển cảnh mờ dần trước khi đi
+    document.body.style.transition = "2s";
+    document.body.style.opacity = "0";
+    document.body.style.transform = "scale(2)";
+    
+    setTimeout(() => {
+        window.location.href = "https://your-new-website.com"; // Thay địa chỉ web của cậu ở đây
+    }, 1500);
+}
+     
     </script>
 </body>
 </html>
