@@ -293,6 +293,38 @@
     filter: brightness(1.2);
 }
         
+        /* --- HIỆU ỨNG CỔNG DỊCH CHUYỂN MỚI --- */
+#portal-layer {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 20px; height: 20px;
+    background: radial-gradient(circle, #fff 20%, rgba(255,255,255,0.8) 100%);
+    border-radius: 50%;
+    z-index: 9999; /* Đè lên tất cả */
+    pointer-events: none;
+    opacity: 0;
+    transition: all 1.5s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
+/* Class này sẽ được JS thêm vào để kích hoạt hiệu ứng */
+#portal-layer.active {
+    width: 300vmax; /* Mở rộng cực đại bao trùm màn hình */
+    height: 300vmax;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Hiệu ứng rung nhẹ cho thẻ Card trước khi bay màu */
+@keyframes shakeCard {
+    0% { transform: rotate(0deg) scale(1.1); }
+    25% { transform: rotate(-5deg) scale(1.15); }
+    50% { transform: rotate(5deg) scale(1.15); }
+    75% { transform: rotate(-5deg) scale(1.15); }
+    100% { transform: rotate(0deg) scale(1.2); opacity: 0; }
+}
+
+
     </style>
 </head>
 <body>
@@ -506,6 +538,8 @@
             <button class="btn btn-yes" onclick="closeSad()">Thử lại</button>
         </div>
     </div>
+
+                    <div id="portal-layer"></div>
 
     <script>
         const START_DATE = "2025-10-21"; 
@@ -811,14 +845,26 @@ function rejectLove() {
         
         
         function openPortal() {
-    // Tạo hiệu ứng chuyển cảnh mờ dần trước khi đi
-    document.body.style.transition = "2s";
-    document.body.style.opacity = "0";
-    document.body.style.transform = "scale(2)";
-    
+    // 1. Lấy thẻ card cuối cùng để thêm hiệu ứng rung
+    const lastCard = document.querySelector('.last-card');
+    if(lastCard) {
+        lastCard.style.animation = "shakeCard 1s forwards"; // Rung lắc rồi biến mất
+    }
+
+    // 2. Bắn pháo hoa lần cuối cho đẹp
+    fireConfetti();
+
+    // 3. Kích hoạt màn hình ánh sáng trắng
+    const portal = document.getElementById('portal-layer');
     setTimeout(() => {
-        window.location.href = "https://your-new-website.com"; // Thay địa chỉ web của cậu ở đây
-    }, 1500);
+        portal.classList.add('active'); // Ánh sáng bắt đầu toả ra
+    }, 500); // Đợi 0.5s sau khi bấm mới toả sáng để người ta kịp nhìn card rung
+
+    // 4. Chuyển trang khi màn hình đã trắng xoá
+    setTimeout(() => {
+        // Thay link web của cậu vào đây nhé
+        window.location.href = "https://your-new-website.com"; 
+    }, 2000); // 2 giây sau là chuyển
 }
      
     </script>
