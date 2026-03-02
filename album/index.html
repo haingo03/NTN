@@ -1,1 +1,61 @@
-album/index.html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kho Ảnh Kỷ Niệm</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background: #fdf2f2; margin: 0; padding: 20px; text-align: center; }
+        h1 { color: #ff4d6d; }
+        
+        /* Bố cục lưới (Grid) giúp ảnh tự sắp xếp */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            background: white;
+            padding: 5px;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03); /* Di chuột vào ảnh sẽ phóng to nhẹ */
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover; /* Giữ ảnh luôn đầy ô mà không bị méo */
+            border-radius: 8px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #ff4d6d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="../index.html" class="back-btn">← Quay lại trang chủ</a>
+    <h1>Kho ảnh của Thảo Nhi ❤️</h1>
+
+    <div class="gallery">
+        <div class="gallery-item"><img src="../Images/anh1.jpg" alt="Kỷ niệm"></div>
+        <div class="gallery-item"><img src="../Images/anh2.jpg" alt="Kỷ niệm"></div>
+        <div class="gallery-item"><img src="../Images/anh3.jpg" alt="Kỷ niệm"></div>
+        </div>
+
+</body>
+</html>
